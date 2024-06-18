@@ -2,6 +2,10 @@
 
 Funny JSON Explorer (FJE)，是一个JSON文件可视化的命令行界面小工具
 
+Github repo URL: `https://github.com/Louis3835/Funny-Json-Explorer.git`
+
+
+
 ## 使用
 
 进入 `Funny_Json_Explorer` 文件夹后，使用命令：

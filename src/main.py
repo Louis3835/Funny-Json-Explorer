@@ -1,7 +1,7 @@
 import argparse
 from src.style.Builder import Style_Builder
 
-
+ 
 def parse_args():
     description = "Funny Json Explorer"
     parser = argparse.ArgumentParser(description=description)
@@ -21,7 +21,7 @@ def main():
         print(f'available icon families: {builder.available_icon_family()}')
         print(f'available styles: {builder.available_styles()}')
 
-    builder.create_style_node(args.file, args.icon_family, args.style).render_all()
+    builder.create_style_node(args.file, args.icon_family, args.style).accept()
 
 
 if __name__ == "__main__":

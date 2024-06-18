@@ -7,7 +7,7 @@ from .TreeStyle import TreeStyleJsonNodeFactory
 import os
 import json
 
-
+ 
 class Style_Builder:
 
     def __init__(self):

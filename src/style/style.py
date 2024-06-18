@@ -10,6 +10,10 @@ class StyleJsonNode(ABC):
     @abstractmethod
     def render(self):
         pass
+    
+    @abstractmethod
+    def accept(self):
+        pass
 
 # 抽象工厂：创建 StyleJsonNode
 class StyleJsonNodeFactory(ABC):

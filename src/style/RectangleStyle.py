@@ -1,6 +1,7 @@
 from .style import StyleJsonNode, StyleJsonNodeFactory
 from ..node import *
 from ..icon import IconFamily
+from .RectangleVisitor import RectangleRenderVisitor
 
 class RectangleStyledJSONNode(StyleJsonNode):
     def __init__(self, root: JsonNode, icon_family: IconFamily):
@@ -16,11 +17,24 @@ class RectangleStyledJSONNode(StyleJsonNode):
             name_length += len(str(node.get_value())) + 2
         self.grid_width = max(self.grid_width, notation_length + name_length + 2)
    
-    def render_all(self) -> None:
-        self.json_node.dfs(lambda node: self.render(node))
+    def accept(self, method="iterator_visitor") -> None:
+        if method == "dfs": # 使用 dfs 方法遍历
+            self.json_node.dfs(lambda node: self.render(node))
+        elif method == "iterator_visitor": # 使用迭代器 + 访问者模式方法
+            visitor = RectangleRenderVisitor(self.icon_family, self.grid_width, self.finder_first_last)
+            for node in self.iterate_nodes(self.json_node):
+                node.accept(visitor)
+            # self.json_node.accept(visitor)
+
+    # 遍历节点
+    def iterate_nodes(self, node: JsonNode):
+        yield node
+        if not node.is_leaf():
+            for child in node:
+                yield from self.iterate_nodes(child)
 
     def render(self, node: JsonNode):
-        if node.is_root():
+        if node.is_root(): 
             return
         line = ''
         # 第一层

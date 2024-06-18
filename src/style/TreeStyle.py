@@ -1,15 +1,20 @@
 from .style import StyleJsonNode, StyleJsonNodeFactory
 from ..node import *
 from ..icon import IconFamily
+from .TreeVisitor import TreeRenderVisitor
 
-
+ 
 class TreeStyleJsonNode(StyleJsonNode):
     def __init__(self, root: JsonNode, icon_family: IconFamily):
         super().__init__(root, icon_family)
 
     # 渲染全部
-    def render_all(self):
-        self.render_container('', '', self.json_node)
+    def accept(self, method = "iterator_visitor"):
+        if method == "origin":
+            self.render_container('', '', self.json_node)
+        elif method == "iterator_visitor": # 使用访问者模式方法
+            visitor = TreeRenderVisitor(self.icon_family)
+            self.json_node.accept(visitor)
 
     # 根据节点类型选择渲染方法
     def render(self, notation_first, notation_second, node: JsonNode):

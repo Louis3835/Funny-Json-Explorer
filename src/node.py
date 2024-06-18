@@ -7,6 +7,8 @@ from .Exception import FileException
 
 id_counter = 0
 
+# 1. 访问模式：被访问元素
+# 2. 组件模式
 class JsonNode:
     def __init__(self, name, level):
         global id_counter
@@ -38,6 +40,18 @@ class JsonNode:
     def dfs(self):
         raise NotImplementedError("Must be implemented by the subclass.")
 
+    # 访问者模式：被访问元素
+    @abstractmethod
+    def accept(self, visitor: 'JsonNodeVisitor'):
+        pass
+
+# 抽象访问者
+class JsonNodeVisitor(ABC):
+    @abstractmethod
+    def visit(self, json_node: JsonNode):
+        pass
+
+
 # Json 叶子节点
 class JsonLeaf(JsonNode):
     def __init__(self, name, level, _value: Union[str, None]):
@@ -53,7 +67,11 @@ class JsonLeaf(JsonNode):
     def get_value(self) -> Union[str, None]:
         return self.value
 
+    def accept(self, visitor: 'JsonNodeVisitor'):
+        visitor.visit(self)
+
 # Json 组件节点
+# 迭代者模式
 class JsonComposite(JsonNode):
     def __init__(self, name, level):
         super().__init__(name, level)
@@ -76,6 +94,17 @@ class JsonComposite(JsonNode):
         for child in self._children:
             child.dfs(fn)
 
+    # 迭代器
+    def __iter__(self):
+        return iter(self._children)
+
+    # 依托于__iter__方法的 accept 
+    def accept(self, visitor: 'JsonNodeVisitor'):
+        visitor.visit(self)
+        
+        # 使用 iter 方法之间遍历所有孩子孩子节点进行 accept
+        # for child in self:
+        #     child.accept(visitor)
 
 class JsonNodeFactory:
     def __init__(self, file_path):
@@ -116,6 +145,10 @@ class JsonNodeFactory:
             return JsonLeaf(name, level, None)
         else:
             return JsonLeaf(name, level, str(data))
+
+
+
+
 
 # 用于寻找节点树的 first node 和 last node
 class Finder_fist_or_last_Node:
